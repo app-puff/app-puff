@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ interface Project {
   created_at: string;
   user_profiles: {
     full_name: string;
-  };
+  } | null;
 }
 
 interface MapaVerdeProps {
@@ -39,7 +38,7 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
         .from('microforest_projects')
         .select(`
           *,
-          user_profiles!inner(full_name)
+          user_profiles(full_name)
         `)
         .order('created_at', { ascending: false });
 
