@@ -39,7 +39,7 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
           trees_planted,
           status,
           created_at,
-          user_profiles!fk_microforest_projects_user_profiles(full_name)
+          user_profiles(full_name)
         `)
         .order('created_at', { ascending: false });
 
@@ -49,13 +49,15 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
       const transformedData: Project[] = (data || []).map(item => ({
         id: item.id,
         name: item.name,
-        description: item.description,
-        location_name: item.location_name,
-        trees_planned: item.trees_planned,
-        trees_planted: item.trees_planted,
-        status: item.status,
+        description: item.description || '',
+        location_name: item.location_name || '',
+        trees_planned: item.trees_planned || 0,
+        trees_planted: item.trees_planted || 0,
+        status: item.status || 'planning',
         created_at: item.created_at,
-        user_profiles: item.user_profiles
+        user_profiles: {
+          full_name: item.user_profiles?.full_name || 'Usuário Anônimo'
+        }
       }));
       
       setProjects(transformedData);
