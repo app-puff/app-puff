@@ -28,7 +28,9 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // First, get projects
+      const { data: projectsData, error: projectsError } = await supabase
         .from('microforest_projects')
         .select(`
           id,
@@ -39,26 +41,40 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
           trees_planted,
           status,
           created_at,
-          user_profiles(full_name)
+          user_id
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
+      if (projectsError) throw projectsError;
+
+      // Then get user profiles separately to avoid join issues
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('user_profiles')
+        .select('id, full_name');
+
+      if (profilesError) {
+        console.warn('Could not fetch user profiles:', profilesError);
+      }
+
       // Transform the data to match our Project interface
-      const transformedData: Project[] = (data || []).map(item => ({
-        id: item.id,
-        name: item.name,
-        description: item.description || '',
-        location_name: item.location_name || '',
-        trees_planned: item.trees_planned || 0,
-        trees_planted: item.trees_planted || 0,
-        status: item.status || 'planning',
-        created_at: item.created_at,
-        user_profiles: {
-          full_name: item.user_profiles?.full_name || 'Usuário Anônimo'
-        }
-      }));
+      const transformedData: Project[] = (projectsData || []).map(project => {
+        // Find the matching user profile
+        const userProfile = profilesData?.find(profile => profile.id === project.user_id);
+        
+        return {
+          id: project.id,
+          name: project.name,
+          description: project.description || '',
+          location_name: project.location_name || '',
+          trees_planned: project.trees_planned || 0,
+          trees_planted: project.trees_planted || 0,
+          status: project.status || 'planning',
+          created_at: project.created_at,
+          user_profiles: {
+            full_name: userProfile?.full_name || 'Usuário Anônimo'
+          }
+        };
+      });
       
       setProjects(transformedData);
     } catch (error) {
