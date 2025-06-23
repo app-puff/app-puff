@@ -29,7 +29,7 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
     try {
       setLoading(true);
       
-      // First, get projects without any joins
+      // Fetch projects with a simple query
       const { data: projectsData, error: projectsError } = await supabase
         .from('microforest_projects')
         .select('id, name, description, location_name, trees_planned, trees_planted, status, created_at, user_id')
@@ -40,7 +40,7 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
         throw projectsError;
       }
 
-      // Then get user profiles separately
+      // Fetch user profiles separately
       const { data: profilesData, error: profilesError } = await supabase
         .from('user_profiles')
         .select('id, full_name');
@@ -49,10 +49,17 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
         console.warn('Could not fetch user profiles:', profilesError);
       }
 
+      // Create a map of user profiles for easy lookup
+      const profilesMap = new Map();
+      if (profilesData) {
+        profilesData.forEach(profile => {
+          profilesMap.set(profile.id, profile);
+        });
+      }
+
       // Transform the data to match our Project interface
       const transformedData: Project[] = (projectsData || []).map(project => {
-        // Find the matching user profile
-        const userProfile = profilesData?.find(profile => profile.id === project.user_id);
+        const userProfile = profilesMap.get(project.user_id);
         
         return {
           id: project.id,
