@@ -8,6 +8,9 @@ import MapaVerde from '@/components/MapaVerde';
 import MeusPlantios from '@/components/MeusPlantios';
 import CriarMicrofloresta from '@/components/CriarMicrofloresta';
 import Desafios from '@/components/Desafios';
+import Comunidade from '@/components/Comunidade';
+import ImpactoAmbiental from '@/components/ImpactoAmbiental';
+import Guia from '@/components/Guia';
 
 type Screen = 'splash' | 'auth' | 'dashboard' | 'map' | 'plantings' | 'create' | 'guide' | 'challenges' | 'community' | 'impact' | 'profile';
 
@@ -20,8 +23,7 @@ const AppContent = () => {
       if (user) {
         setCurrentScreen('dashboard');
       } else if (currentScreen === 'splash') {
-        // Only show auth screen if we're still on splash and not logged in
-        setTimeout(() => setCurrentScreen('auth'),100);
+        setTimeout(() => setCurrentScreen('auth'), 100);
       }
     }
   }, [user, loading, currentScreen]);
@@ -63,9 +65,16 @@ const AppContent = () => {
         setCurrentScreen('challenges');
         break;
       case 'guide':
+        setCurrentScreen('guide');
+        break;
       case 'community':
+        setCurrentScreen('community');
+        break;
       case 'impact':
+        setCurrentScreen('impact');
+        break;
       case 'profile':
+        // Profile will be implemented later
         alert(`Tela "${screen}" será implementada na próxima versão! 🌱`);
         break;
       default:
@@ -103,6 +112,12 @@ const AppContent = () => {
         );
       case 'challenges':
         return <Desafios onBack={() => setCurrentScreen('dashboard')} />;
+      case 'guide':
+        return <Guia onBack={() => setCurrentScreen('dashboard')} />;
+      case 'community':
+        return <Comunidade onBack={() => setCurrentScreen('dashboard')} />;
+      case 'impact':
+        return <ImpactoAmbiental onBack={() => setCurrentScreen('dashboard')} />;
       default:
         return <Dashboard onNavigate={handleNavigate} />;
     }
