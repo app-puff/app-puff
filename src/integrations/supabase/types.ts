@@ -272,6 +272,7 @@ export type Database = {
           full_name: string | null
           id: string
           profile_image_url: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
           total_points: number | null
           total_trees_planted: number | null
           updated_at: string
@@ -282,6 +283,7 @@ export type Database = {
           full_name?: string | null
           id: string
           profile_image_url?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           total_points?: number | null
           total_trees_planted?: number | null
           updated_at?: string
@@ -292,6 +294,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           profile_image_url?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           total_points?: number | null
           total_trees_planted?: number | null
           updated_at?: string
@@ -307,7 +310,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -422,6 +425,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["admin", "moderator", "user"],
+    },
   },
 } as const

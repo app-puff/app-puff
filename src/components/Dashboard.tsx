@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Bell, Menu, Users, Target, BookOpen, MapPin, Sprout, Plus, BarChart3, Settings } from 'lucide-react';
+import LogoutButton from '@/components/LogoutButton';
 
 interface DashboardProps {
   onNavigate: (screen: string) => void;
@@ -111,6 +112,7 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
                 <p className="text-sm font-medium">Olá, Thais! 👋</p>
                 <p className="text-xs text-gray-500">Bem-vinda de volta</p>
               </div>
+              <LogoutButton />
             </div>
           </div>
         </div>
