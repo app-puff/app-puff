@@ -7,6 +7,7 @@ import Dashboard from '@/components/Dashboard';
 import MapaVerde from '@/components/MapaVerde';
 import MeusPlantios from '@/components/MeusPlantios';
 import CriarMicrofloresta from '@/components/CriarMicrofloresta';
+import Desafios from '@/components/Desafios';
 
 type Screen = 'splash' | 'auth' | 'dashboard' | 'map' | 'plantings' | 'create' | 'guide' | 'challenges' | 'community' | 'impact' | 'profile';
 
@@ -20,7 +21,7 @@ const AppContent = () => {
         setCurrentScreen('dashboard');
       } else if (currentScreen === 'splash') {
         // Only show auth screen if we're still on splash and not logged in
-        setTimeout(() => setCurrentScreen('auth'), 100);
+        setTimeout(() => setCurrentScreen('auth'),100);
       }
     }
   }, [user, loading, currentScreen]);
@@ -58,8 +59,10 @@ const AppContent = () => {
       case 'create':
         setCurrentScreen('create');
         break;
-      case 'guide':
       case 'challenges':
+        setCurrentScreen('challenges');
+        break;
+      case 'guide':
       case 'community':
       case 'impact':
       case 'profile':
@@ -98,6 +101,8 @@ const AppContent = () => {
             onSuccess={() => setCurrentScreen('plantings')}
           />
         );
+      case 'challenges':
+        return <Desafios onBack={() => setCurrentScreen('dashboard')} />;
       default:
         return <Dashboard onNavigate={handleNavigate} />;
     }

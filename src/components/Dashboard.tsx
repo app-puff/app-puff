@@ -1,10 +1,11 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bell, Menu, Users, Target, BookOpen, MapPin, Sprout, Plus, BarChart3, Settings } from 'lucide-react';
+import { Users, Target, BookOpen, MapPin, Sprout, Plus, BarChart3, Settings } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
+import SideMenu from '@/components/SideMenu';
+import NotificationPanel from '@/components/NotificationPanel';
 
 interface DashboardProps {
   onNavigate: (screen: string) => void;
@@ -87,10 +88,8 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Button variant="ghost" size="sm" className="mr-3">
-                <Menu className="w-5 h-5" />
-              </Button>
-              <div className="flex items-center space-x-3">
+              <SideMenu onNavigate={onNavigate} />
+              <div className="flex items-center space-x-3 ml-3">
                 <div className="w-8 h-8 bg-puff-green rounded-full flex items-center justify-center">
                   <span className="text-white text-sm">🌱</span>
                 </div>
@@ -100,14 +99,7 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="w-5 h-5" />
-                {notifications > 0 && (
-                  <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-red-500 text-white text-xs">
-                    {notifications}
-                  </Badge>
-                )}
-              </Button>
+              <NotificationPanel notificationCount={notifications} />
               <div className="text-right">
                 <p className="text-sm font-medium">Olá, Thais! 👋</p>
                 <p className="text-xs text-gray-500">Bem-vinda de volta</p>
