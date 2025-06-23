@@ -29,25 +29,18 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
     try {
       setLoading(true);
       
-      // First, get projects
+      // First, get projects without any joins
       const { data: projectsData, error: projectsError } = await supabase
         .from('microforest_projects')
-        .select(`
-          id,
-          name,
-          description,
-          location_name,
-          trees_planned,
-          trees_planted,
-          status,
-          created_at,
-          user_id
-        `)
+        .select('id, name, description, location_name, trees_planned, trees_planted, status, created_at, user_id')
         .order('created_at', { ascending: false });
 
-      if (projectsError) throw projectsError;
+      if (projectsError) {
+        console.error('Error fetching projects:', projectsError);
+        throw projectsError;
+      }
 
-      // Then get user profiles separately to avoid join issues
+      // Then get user profiles separately
       const { data: profilesData, error: profilesError } = await supabase
         .from('user_profiles')
         .select('id, full_name');
@@ -63,7 +56,7 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
         
         return {
           id: project.id,
-          name: project.name,
+          name: project.name || 'Projeto sem nome',
           description: project.description || '',
           location_name: project.location_name || '',
           trees_planned: project.trees_planned || 0,
@@ -79,6 +72,7 @@ const MapaVerde = ({ onBack }: MapaVerdeProps) => {
       setProjects(transformedData);
     } catch (error) {
       console.error('Erro ao buscar projetos:', error);
+      setProjects([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
