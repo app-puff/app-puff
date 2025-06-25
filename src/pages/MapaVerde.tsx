@@ -5,14 +5,14 @@ import { useEffect } from 'react';
 import MapaVerde from '@/components/MapaVerde';
 
 const MapaVerdePage = () => {
-  const { user, loading } = useAuth();
+  const { user, isGuest, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !isGuest) {
       navigate('/auth');
     }
-  }, [user, loading, navigate]);
+  }, [user, isGuest, loading, navigate]);
 
   const handleBack = () => {
     navigate('/dashboard');
@@ -24,7 +24,7 @@ const MapaVerdePage = () => {
     </div>;
   }
 
-  if (!user) {
+  if (!user && !isGuest) {
     return null;
   }
 

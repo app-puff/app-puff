@@ -5,24 +5,26 @@ import { useEffect } from 'react';
 import AuthScreen from '@/components/AuthScreen';
 
 const Auth = () => {
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
+    if (user || isGuest) {
       navigate('/dashboard');
     }
-  }, [user, navigate]);
+  }, [user, isGuest, navigate]);
 
   const handleLogin = () => {
     navigate('/dashboard');
   };
 
   const handleGuestAccess = () => {
+    const { signInAsGuest } = useAuth();
+    signInAsGuest();
     navigate('/dashboard');
   };
 
-  if (user) {
+  if (user || isGuest) {
     return null;
   }
 

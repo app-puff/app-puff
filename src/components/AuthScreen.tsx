@@ -4,10 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
-import { toast } from '@/hooks/use-toast';
+import { Leaf, Users, TreePineIcon } from 'lucide-react';
 
 interface AuthScreenProps {
   onLogin: () => void;
@@ -15,159 +14,209 @@ interface AuthScreenProps {
 }
 
 const AuthScreen = ({ onLogin, onGuestAccess }: AuthScreenProps) => {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [userType, setUserType] = useState('community');
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    fullName: '',
-    userType: 'community'
-  });
+  const [error, setError] = useState('');
 
   const { signIn, signUp } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
-      if (isSignUp) {
-        const { error } = await signUp(formData.email, formData.password, formData.fullName, formData.userType);
-        if (error) throw error;
-        
-        toast({
-          title: "Conta criada!",
-          description: "Verifique seu e-mail para confirmar sua conta.",
-        });
+      const { error } = await signIn(email, password);
+      if (error) {
+        setError(error.message);
       } else {
-        const { error } = await signIn(formData.email, formData.password);
-        if (error) throw error;
         onLogin();
       }
-    } catch (error: any) {
-      toast({
-        title: "Erro",
-        description: error.message || "Ocorreu um erro durante a autenticação",
-        variant: "destructive"
-      });
+    } catch (err) {
+      setError('Erro ao fazer login');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error } = await signUp(email, password, fullName, userType);
+      if (error) {
+        setError(error.message);
+      } else {
+        setError('');
+        alert('Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.');
+      }
+    } catch (err) {
+      setError('Erro ao criar conta');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fillTestUser = () => {
+    setEmail('xthaislima@gmail.com');
+    setPassword('123456');
+  };
+
   return (
-    <div className="min-h-screen bg-puff-gradient flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <span className="text-3xl">🌱</span>
+    <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-8">
+        {/* Logo/Header */}
+        <div className="text-center">
+          <div className="flex justify-center items-center gap-2 mb-2">
+            <div className="bg-puff-green text-white p-2 rounded-full">
+              <TreePineIcon className="w-8 h-8" />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">PUFF</h1>
-          <p className="text-white/90">Plante Um Futuro Feliz</p>
+          <h1 className="text-3xl font-bold text-puff-green">PUFF</h1>
+          <p className="text-gray-600 mt-2">Plante Um Futuro Feliz</p>
         </div>
 
-        {/* Auth Card */}
-        <Card className="shadow-2xl">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-center text-puff-green">
-              {isSignUp ? 'Criar Conta' : 'Entrar'}
-            </CardTitle>
-            <CardDescription className="text-center">
-              {isSignUp 
-                ? 'Junte-se à comunidade PUFF e comece a plantar' 
-                : 'Acesse sua conta para continuar plantando'
-              }
+            <CardTitle>Bem-vindo ao PUFF</CardTitle>
+            <CardDescription>
+              Entre ou crie sua conta para começar a plantar o futuro
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {isSignUp && (
-                <>
-                  <div>
-                    <Label htmlFor="fullName">Nome Completo</Label>
+            <Tabs defaultValue="login" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Entrar</TabsTrigger>
+                <TabsTrigger value="signup">Criar Conta</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="login" className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="login-email">E-mail</Label>
                     <Input
-                      id="fullName"
-                      type="text"
-                      value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      id="login-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
-                      placeholder="Seu nome completo"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="login-password">Senha</Label>
+                    <Input
+                      id="login-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
                     />
                   </div>
                   
-                  <div>
-                    <Label htmlFor="userType">Perfil</Label>
-                    <Select 
-                      value={formData.userType} 
-                      onValueChange={(value) => setFormData({ ...formData, userType: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="student">🧑‍🎓 Aluno</SelectItem>
-                        <SelectItem value="teacher">🧑‍🏫 Professor</SelectItem>
-                        <SelectItem value="school">🏫 Escola/Instituição</SelectItem>
-                        <SelectItem value="community">🌱 Comunidade / Público geral</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  {/* Test User Button */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={fillTestUser}
+                    className="w-full"
+                  >
+                    Usar Usuário de Teste
+                  </Button>
+
+                  {error && (
+                    <div className="text-red-500 text-sm text-center">
+                      {error}
+                    </div>
+                  )}
+
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-puff-green hover:bg-puff-green/90"
+                    disabled={loading}
+                  >
+                    {loading ? 'Entrando...' : 'Entrar'}
+                  </Button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="signup" className="space-y-4">
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-name">Nome Completo</Label>
+                    <Input
+                      id="signup-name"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
+                    />
                   </div>
-                </>
-              )}
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">E-mail</Label>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password">Senha</Label>
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="user-type">Tipo de Usuário</Label>
+                    <select
+                      id="user-type"
+                      value={userType}
+                      onChange={(e) => setUserType(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-puff-green"
+                    >
+                      <option value="student">Estudante</option>
+                      <option value="teacher">Professor</option>
+                      <option value="school">Escola/Instituição</option>
+                      <option value="community">Comunidade</option>
+                    </select>
+                  </div>
 
-              <div>
-                <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  placeholder="seu@email.com"
-                />
-              </div>
+                  {error && (
+                    <div className="text-red-500 text-sm text-center">
+                      {error}
+                    </div>
+                  )}
 
-              <div>
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                  placeholder="Sua senha"
-                />
-              </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-puff-green hover:bg-puff-green/90"
+                    disabled={loading}
+                  >
+                    {loading ? 'Criando conta...' : 'Criar Conta'}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-puff-green hover:bg-puff-green/90"
-                disabled={loading}
-              >
-                {loading ? 'Carregando...' : (isSignUp ? 'Criar Conta' : 'Entrar')}
-              </Button>
-            </form>
-
-            <Separator className="my-6" />
-
-            <div className="space-y-3">
+            {/* Guest Access */}
+            <div className="mt-6 pt-4 border-t">
               <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() => setIsSignUp(!isSignUp)}
-              >
-                {isSignUp ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastrar-se'}
-              </Button>
-
-              <Button
-                type="button"
                 variant="ghost"
-                className="w-full text-gray-600"
                 onClick={onGuestAccess}
+                className="w-full flex items-center gap-2"
               >
-                Explorar como Visitante
+                <Users className="w-4 h-4" />
+                Entrar como Visitante
               </Button>
             </div>
           </CardContent>

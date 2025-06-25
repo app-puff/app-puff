@@ -5,14 +5,14 @@ import { useEffect } from 'react';
 import Dashboard from '@/components/Dashboard';
 
 const DashboardPage = () => {
-  const { user, loading } = useAuth();
+  const { user, isGuest, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !isGuest) {
       navigate('/auth');
     }
-  }, [user, loading, navigate]);
+  }, [user, isGuest, loading, navigate]);
 
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white flex items-center justify-center">
@@ -20,7 +20,7 @@ const DashboardPage = () => {
     </div>;
   }
 
-  if (!user) {
+  if (!user && !isGuest) {
     return null;
   }
 
