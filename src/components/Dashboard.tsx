@@ -1,76 +1,73 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Target, BookOpen, MapPin, Sprout, Plus, BarChart3, Settings } from 'lucide-react';
+import { Users, Target, BookOpen, MapPin, Sprout, Plus, Settings } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
 import SideMenu from '@/components/SideMenu';
 import NotificationPanel from '@/components/NotificationPanel';
+
 interface DashboardProps {
   onNavigate: (screen: string) => void;
 }
-const Dashboard = ({
-  onNavigate
-}: DashboardProps) => {
+
+const Dashboard = ({ onNavigate }: DashboardProps) => {
   const [notifications] = useState(3);
-  const dashboardCards = [{
-    id: 'map',
-    title: 'Mapa Verde',
-    description: 'Explore projetos de microflorestas',
-    icon: <MapPin className="w-8 h-8" />,
-    color: 'bg-blue-500',
-    stats: '127 projetos ativos'
-  }, {
-    id: 'plantings',
-    title: 'Meus Plantios',
-    description: 'Gerencie seus projetos',
-    icon: <Sprout className="w-8 h-8" />,
-    color: 'bg-puff-green',
-    stats: '3 projetos em andamento'
-  }, {
-    id: 'create',
-    title: 'Criar Microfloresta',
-    description: 'Inicie um novo projeto',
-    icon: <Plus className="w-8 h-8" />,
-    color: 'bg-orange-500',
-    stats: 'Plano personalizado'
-  }, {
-    id: 'guide',
-    title: 'Guia PUFF',
-    description: 'Centro de conhecimento',
-    icon: <BookOpen className="w-8 h-8" />,
-    color: 'bg-purple-500',
-    stats: '50+ artigos'
-  }, {
-    id: 'challenges',
-    title: 'Desafios e Ranking',
-    description: 'Gamificação e conquistas',
-    icon: <Target className="w-8 h-8" />,
-    color: 'bg-yellow-500',
-    stats: 'Nível 7 - Guardião'
-  }, {
-    id: 'community',
-    title: 'Comunidade PUFF',
-    description: 'Fórum e colaboração',
-    icon: <Users className="w-8 h-8" />,
-    color: 'bg-pink-500',
-    stats: '1.2k membros ativos'
-  }, {
-    id: 'impact',
-    title: 'Impacto Ambiental',
-    description: 'Métricas de sustentabilidade',
-    icon: <BarChart3 className="w-8 h-8" />,
-    color: 'bg-green-600',
-    stats: '2.5t CO₂ capturado'
-  }, {
-    id: 'profile',
-    title: 'Perfil e Configurações',
-    description: 'Suas informações pessoais',
-    icon: <Settings className="w-8 h-8" />,
-    color: 'bg-gray-500',
-    stats: 'Perfil completo'
-  }];
-  return <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white">
+  
+  const dashboardCards = [
+    {
+      id: 'map',
+      title: 'Mapa Verde',
+      description: 'Explore projetos de microflorestas',
+      icon: <MapPin className="w-8 h-8" />,
+      color: 'bg-blue-500',
+      stats: '127 projetos ativos'
+    },
+    {
+      id: 'plantings',
+      title: 'Meus Plantios',
+      description: 'Gerencie seus projetos',
+      icon: <Sprout className="w-8 h-8" />,
+      color: 'bg-puff-green',
+      stats: '3 projetos em andamento'
+    },
+    {
+      id: 'create',
+      title: 'Criar Microfloresta',
+      description: 'Inicie um novo projeto',
+      icon: <Plus className="w-8 h-8" />,
+      color: 'bg-orange-500',
+      stats: 'Plano personalizado'
+    },
+    {
+      id: 'guide',
+      title: 'Guia PUFF',
+      description: 'Centro de conhecimento',
+      icon: <BookOpen className="w-8 h-8" />,
+      color: 'bg-purple-500',
+      stats: '50+ artigos'
+    },
+    {
+      id: 'challenges',
+      title: 'Desafios e Ranking',
+      description: 'Gamificação e conquistas',
+      icon: <Target className="w-8 h-8" />,
+      color: 'bg-yellow-500',
+      stats: 'Nível 7 - Guardião'
+    },
+    {
+      id: 'community',
+      title: 'Comunidade PUFF',
+      description: 'Fórum e colaboração',
+      icon: <Users className="w-8 h-8" />,
+      color: 'bg-pink-500',
+      stats: '1.2k membros ativos'
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -100,11 +97,6 @@ const Dashboard = ({
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          
-        </div>
-
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
@@ -154,8 +146,13 @@ const Dashboard = ({
         </div>
 
         {/* Dashboard Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {dashboardCards.map(card => <Card key={card.id} className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1 group" onClick={() => onNavigate(card.id)}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {dashboardCards.map(card => (
+            <Card 
+              key={card.id} 
+              className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1 group" 
+              onClick={() => onNavigate(card.id)}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className={`p-3 rounded-lg ${card.color} text-white group-hover:scale-110 transition-transform duration-200`}>
@@ -174,7 +171,8 @@ const Dashboard = ({
                   {card.stats}
                 </p>
               </CardContent>
-            </Card>)}
+            </Card>
+          ))}
         </div>
 
         {/* Recent Activity */}
@@ -218,6 +216,8 @@ const Dashboard = ({
           </Card>
         </div>
       </main>
-    </div>;
+    </div>
+  );
 };
+
 export default Dashboard;

@@ -12,7 +12,7 @@ import Comunidade from '@/components/Comunidade';
 import ImpactoAmbiental from '@/components/ImpactoAmbiental';
 import Guia from '@/components/Guia';
 
-type Screen = 'splash' | 'auth' | 'dashboard' | 'map' | 'plantings' | 'create' | 'guide' | 'challenges' | 'community' | 'impact' | 'profile';
+type Screen = 'splash' | 'auth' | 'dashboard' | 'map' | 'plantings' | 'create' | 'guide' | 'challenges' | 'community' | 'impact';
 
 const AppContent = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('splash');
@@ -73,12 +73,8 @@ const AppContent = () => {
       case 'impact':
         setCurrentScreen('impact');
         break;
-      case 'profile':
-        // Profile will be implemented later
-        alert(`Tela "${screen}" será implementada na próxima versão! 🌱`);
-        break;
       default:
-        alert(`Tela "${screen}" será implementada na próxima versão! 🌱`);
+        console.log(`Screen ${screen} not implemented yet`);
     }
   };
 

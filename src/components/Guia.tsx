@@ -1,320 +1,254 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, BookOpen, Search, FileText, Video, Download } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-
-interface GuideArticle {
-  id: string;
-  title: string;
-  content: string;
-  summary: string;
-  category: string;
-  image_url?: string;
-  published_at: string;
-}
+import { ArrowLeft, Search, BookOpen, Leaf, Droplet, Sun, Bug, Recycle } from 'lucide-react';
 
 interface GuiaProps {
   onBack: () => void;
 }
 
 const Guia = ({ onBack }: GuiaProps) => {
-  const [articles, setArticles] = useState<GuideArticle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const categories = [
-    { id: 'all', name: 'Todos', icon: '📚', color: 'bg-gray-500' },
-    { id: 'especies', name: 'Espécies Nativas', icon: '🌳', color: 'bg-green-500' },
-    { id: 'solo', name: 'Preparo do Solo', icon: '🧑‍🌾', color: 'bg-brown-500' },
-    { id: 'compostagem', name: 'Compostagem', icon: '♻️', color: 'bg-yellow-600' },
-    { id: 'agua', name: 'Captação de Água', icon: '🚿', color: 'bg-blue-500' },
-    { id: 'manutencao', name: 'Manutenção', icon: '🌿', color: 'bg-emerald-500' },
-    { id: 'educacao', name: 'Atividades Educativas', icon: '🎨', color: 'bg-purple-500' },
+  const categorias = [
+    { id: 'all', nome: 'Todos', icon: <BookOpen className="w-4 h-4" /> },
+    { id: 'especies', nome: 'Espécies Nativas', icon: <Leaf className="w-4 h-4" /> },
+    { id: 'solo', nome: 'Preparação do Solo', icon: <Sun className="w-4 h-4" /> },
+    { id: 'agua', nome: 'Irrigação', icon: <Droplet className="w-4 h-4" /> },
+    { id: 'manutencao', nome: 'Manutenção', icon: <Bug className="w-4 h-4" /> },
+    { id: 'compostagem', nome: 'Compostagem', icon: <Recycle className="w-4 h-4" /> }
   ];
 
-  // Sample articles
-  const sampleArticles = [
+  const artigos = [
     {
-      id: '1',
-      title: 'Espécies Nativas da Mata Atlântica para Microflorestas',
-      content: 'A Mata Atlântica é um dos biomas mais ricos em biodiversidade do mundo. Para criar microflorestas eficazes, é essencial conhecer as espécies nativas da região...',
-      summary: 'Conheça as principais árvores nativas ideais para seu projeto de microfloresta',
-      category: 'especies',
-      published_at: new Date().toISOString()
+      id: 1,
+      titulo: 'Como Preparar o Solo para Microflorestas',
+      resumo: 'Guia completo sobre análise e preparação do solo antes do plantio',
+      categoria: 'solo',
+      tempo: '8 min leitura',
+      nivel: 'Iniciante',
+      imagem: '🌱'
     },
     {
-      id: '2',
-      title: 'Como Preparar o Solo para Microflorestas Urbanas',
-      content: 'O preparo adequado do solo é fundamental para o sucesso de qualquer microfloresta. Aprenda técnicas de análise, correção e enriquecimento do solo urbano...',
-      summary: 'Técnicas essenciais para preparar e enriquecer o solo urbano',
-      category: 'solo',
-      published_at: new Date(Date.now() - 86400000).toISOString()
+      id: 2,
+      titulo: 'Espécies Nativas do Cerrado',
+      resumo: 'Conheça as principais espécies nativas recomendadas para sua região',
+      categoria: 'especies',
+      tempo: '12 min leitura',
+      nivel: 'Intermediário',
+      imagem: '🌳'
     },
     {
-      id: '3',
-      title: 'Compostagem Escolar: Transformando Resíduos em Adubo',
-      content: 'A compostagem é uma técnica sustentável que transforma resíduos orgânicos em adubo rico em nutrientes. Veja como implementar na sua escola...',
-      summary: 'Guia completo para implementar compostagem em escolas e comunidades',
-      category: 'compostagem',
-      published_at: new Date(Date.now() - 172800000).toISOString()
+      id: 3,
+      titulo: 'Sistema de Irrigação por Gotejamento',
+      resumo: 'Como criar um sistema eficiente de irrigação para sua microfloresta',
+      categoria: 'agua',
+      tempo: '6 min leitura',
+      nivel: 'Intermediário',
+      imagem: '💧'
     },
     {
-      id: '4',
-      title: 'Sistemas de Captação de Água da Chuva',
-      content: 'A água da chuva pode ser uma excelente fonte de irrigação para microflorestas. Aprenda a criar sistemas simples e eficientes de captação...',
-      summary: 'Crie sistemas sustentáveis de irrigação usando água da chuva',
-      category: 'agua',
-      published_at: new Date(Date.now() - 259200000).toISOString()
+      id: 4,
+      titulo: 'Compostagem Escolar e Comunitária',
+      resumo: 'Transforme resíduos orgânicos em adubo rico para suas plantas',
+      categoria: 'compostagem',
+      tempo: '10 min leitura',
+      nivel: 'Iniciante',
+      imagem: '♻️'
     },
     {
-      id: '5',
-      title: 'Manutenção e Cuidados com Microflorestas',
-      content: 'Após o plantio, as microflorestas precisam de cuidados específicos para crescer saudáveis. Conheça técnicas de poda, adubação e controle de pragas...',
-      summary: 'Mantenha sua microfloresta saudável com estas práticas essenciais',
-      category: 'manutencao',
-      published_at: new Date(Date.now() - 345600000).toISOString()
+      id: 5,
+      titulo: 'Controle Natural de Pragas',
+      resumo: 'Métodos sustentáveis para proteger suas mudas sem agrotóxicos',
+      categoria: 'manutencao',
+      tempo: '7 min leitura',
+      nivel: 'Avançado',
+      imagem: '🐛'
     },
     {
-      id: '6',
-      title: 'Atividades Educativas para Escolas',
-      content: 'Transforme sua microfloresta em uma sala de aula ao ar livre. Descubra atividades práticas para engajar estudantes na educação ambiental...',
-      summary: 'Atividades práticas para educação ambiental usando microflorestas',
-      category: 'educacao',
-      published_at: new Date(Date.now() - 432000000).toISOString()
+      id: 6,
+      titulo: 'Calendário de Plantio Regional',
+      resumo: 'Saiba a melhor época para plantar cada espécie em sua região',
+      categoria: 'especies',
+      tempo: '5 min leitura',
+      nivel: 'Iniciante',
+      imagem: '📅'
+    },
+    {
+      id: 7,
+      titulo: 'Captação e Armazenamento de Água da Chuva',
+      resumo: 'Técnicas simples para aproveitar a água da chuva na irrigação',
+      categoria: 'agua',
+      tempo: '9 min leitura',
+      nivel: 'Intermediário',
+      imagem: '🌧️'
+    },
+    {
+      id: 8,
+      titulo: 'Manutenção Sazonal de Microflorestas',
+      resumo: 'Cuidados específicos para cada estação do ano',
+      categoria: 'manutencao',
+      tempo: '11 min leitura',
+      nivel: 'Intermediário',
+      imagem: '🗓️'
     }
   ];
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
-
-  const fetchArticles = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('guide_articles')
-        .select('*')
-        .order('published_at', { ascending: false });
-
-      if (error) throw error;
-      
-      // Use sample articles if no data exists
-      setArticles(data && data.length > 0 ? data : sampleArticles);
-    } catch (error) {
-      console.error('Erro ao buscar artigos:', error);
-      setArticles(sampleArticles);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredArticles = articles.filter(article => {
-    const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory;
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.summary.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+  const artigosFiltrados = artigos.filter(artigo => {
+    const matchesSearch = artigo.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         artigo.resumo.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || artigo.categoria === selectedCategory;
+    return matchesSearch && matchesCategory;
   });
 
-  const getCategoryInfo = (categoryId: string) => {
-    return categories.find(cat => cat.id === categoryId) || categories[0];
+  const getNivelColor = (nivel: string) => {
+    switch (nivel) {
+      case 'Iniciante': return 'bg-green-100 text-green-800';
+      case 'Intermediário': return 'bg-yellow-100 text-yellow-800';
+      case 'Avançado': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white p-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <Button variant="ghost" onClick={onBack}>
+          <Button variant="ghost" onClick={onBack} className="flex items-center">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar
           </Button>
           <h1 className="text-2xl font-bold text-puff-green">📚 Guia PUFF</h1>
-          <div className="text-sm text-gray-500">
-            Centro de Conhecimento
-          </div>
+          <div></div>
         </div>
 
-        {/* Header Card */}
+        {/* Barra de Pesquisa */}
         <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <BookOpen className="w-6 h-6 text-puff-green" />
-              <span>Central de Conhecimento</span>
-            </CardTitle>
-            <CardDescription>
-              Aprenda tudo sobre microflorestas, desde o planejamento até a manutenção
-            </CardDescription>
-          </CardHeader>
+          <CardContent className="p-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Buscar artigos, tutoriais e guias..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </CardContent>
         </Card>
 
-        {/* Search and Filters */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-            <Input
-              placeholder="Buscar artigos, tutoriais..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {categories.map(category => (
-              <Button
-                key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category.id)}
-                className={selectedCategory === category.id ? `${category.color} text-white` : ''}
-              >
-                <span className="mr-1">{category.icon}</span>
-                {category.name}
-              </Button>
+        {/* Categorias */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {categorias.map(categoria => (
+            <Button
+              key={categoria.id}
+              variant={selectedCategory === categoria.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedCategory(categoria.id)}
+              className="flex items-center space-x-2"
+            >
+              {categoria.icon}
+              <span>{categoria.nome}</span>
+            </Button>
+          ))}
+        </div>
+
+        {/* Artigos em Destaque */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">📖 Centro de Conhecimento</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {artigosFiltrados.map(artigo => (
+              <Card key={artigo.id} className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="text-3xl mb-2">{artigo.imagem}</div>
+                    <Badge className={getNivelColor(artigo.nivel)}>
+                      {artigo.nivel}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg leading-tight">{artigo.titulo}</CardTitle>
+                  <CardDescription>{artigo.resumo}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <span>{artigo.tempo}</span>
+                    <Badge variant="outline" className="text-xs">
+                      {categorias.find(c => c.id === artigo.categoria)?.nome}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
 
-        {/* Quick Start Section */}
-        <Card className="mb-6 bg-gradient-to-r from-puff-green/10 to-puff-sky/10">
-          <CardHeader>
-            <CardTitle>🚀 Início Rápido</CardTitle>
-            <CardDescription>
-              Novato em microflorestas? Comece por aqui!
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                <span className="text-2xl">🌱</span>
-                <span className="font-medium">Primeiros Passos</span>
-                <span className="text-xs text-gray-500">Como começar seu projeto</span>
-              </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                <span className="text-2xl">📋</span>
-                <span className="font-medium">Checklist Completo</span>
-                <span className="text-xs text-gray-500">Lista de verificação</span>
-              </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-                <span className="text-2xl">🎥</span>
-                <span className="font-medium">Vídeo Tutorial</span>
-                <span className="text-xs text-gray-500">Aprenda assistindo</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Recursos Adicionais */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BookOpen className="w-5 h-5 mr-2 text-blue-600" />
+                Biblioteca Digital
+              </CardTitle>
+              <CardDescription>PDFs, vídeos e materiais educativos</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <span className="text-sm font-medium">Manual Completo de Microflorestas</span>
+                  <Button size="sm" variant="outline">Baixar PDF</Button>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <span className="text-sm font-medium">Vídeoaula: Plantio Passo a Passo</span>
+                  <Button size="sm" variant="outline">Assistir</Button>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                  <span className="text-sm font-medium">Checklist de Manutenção</span>
+                  <Button size="sm" variant="outline">Download</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardHeader>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                </CardContent>
-              </Card>
-            ))
-          ) : filteredArticles.length === 0 ? (
-            <div className="col-span-full">
-              <Card className="text-center py-12">
-                <CardContent>
-                  <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                    Nenhum artigo encontrado
-                  </h3>
-                  <p className="text-gray-500">
-                    Tente ajustar os filtros ou termo de busca
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          ) : (
-            filteredArticles.map((article) => {
-              const categoryInfo = getCategoryInfo(article.category);
-              return (
-                <Card key={article.id} className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge className={`${categoryInfo.color} text-white`}>
-                        {categoryInfo.icon} {categoryInfo.name}
-                      </Badge>
-                      <span className="text-xs text-gray-500">
-                        {new Date(article.published_at).toLocaleDateString('pt-BR')}
-                      </span>
-                    </div>
-                    <CardTitle className="text-lg line-clamp-2">
-                      {article.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                      {article.summary}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 text-xs text-gray-500">
-                        <FileText className="w-3 h-3" />
-                        <span>Artigo</span>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        Ler Mais
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })
-          )}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Leaf className="w-5 h-5 mr-2 text-green-600" />
+                Oficinas e Eventos
+              </CardTitle>
+              <CardDescription>Aprenda na prática com especialistas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="p-3 bg-green-50 rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-sm font-medium">Oficina de Compostagem</h4>
+                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Próximo</span>
+                  </div>
+                  <p className="text-xs text-gray-600">15 de Julho • 14h00 • Centro Comunitário</p>
+                </div>
+                <div className="p-3 bg-blue-50 rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-sm font-medium">Mutirão de Plantio</h4>
+                    <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">Inscrições Abertas</span>
+                  </div>
+                  <p className="text-xs text-gray-600">22 de Julho • 08h00 • Parque Central</p>
+                </div>
+                <div className="p-3 bg-yellow-50 rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-sm font-medium">Curso Online: Espécies Nativas</h4>
+                    <span className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded">Em Breve</span>
+                  </div>
+                  <p className="text-xs text-gray-600">Agosto • Online • 4 módulos</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-
-        {/* Resources Section */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>📁 Recursos Adicionais</CardTitle>
-            <CardDescription>
-              Materiais complementares para download e consulta
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <Download className="w-5 h-5 text-blue-600" />
-                <div>
-                  <p className="font-medium text-sm">Manual PDF</p>
-                  <p className="text-xs text-gray-500">Guia completo</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <Video className="w-5 h-5 text-red-600" />
-                <div>
-                  <p className="font-medium text-sm">Vídeo Aulas</p>
-                  <p className="text-xs text-gray-500">12 episódios</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <FileText className="w-5 h-5 text-green-600" />
-                <div>
-                  <p className="font-medium text-sm">Checklists</p>
-                  <p className="text-xs text-gray-500">Listas práticas</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <BookOpen className="w-5 h-5 text-purple-600" />
-                <div>
-                  <p className="font-medium text-sm">E-books</p>
-                  <p className="text-xs text-gray-500">Conteúdo extra</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
