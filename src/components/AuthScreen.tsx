@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
-import { Leaf, Users, TreePineIcon } from 'lucide-react';
+import { Users, TreePineIcon } from 'lucide-react';
 
 interface AuthScreenProps {
   onLogin: () => void;
@@ -62,11 +62,6 @@ const AuthScreen = ({ onLogin, onGuestAccess }: AuthScreenProps) => {
     }
   };
 
-  const fillTestUser = () => {
-    setEmail('xthaislima@gmail.com');
-    setPassword('123456');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
@@ -117,16 +112,6 @@ const AuthScreen = ({ onLogin, onGuestAccess }: AuthScreenProps) => {
                       required
                     />
                   </div>
-                  
-                  {/* Test User Button */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={fillTestUser}
-                    className="w-full"
-                  >
-                    Usar Usuário de Teste
-                  </Button>
 
                   {error && (
                     <div className="text-red-500 text-sm text-center">

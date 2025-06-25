@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Trees, MapPin, Calendar, Plus, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trees, MapPin, Plus, Edit, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
@@ -27,6 +27,7 @@ interface MeusPlantiosProps {
 const MeusPlantios = ({ onBack, onCreateNew }: MeusPlantiosProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -54,6 +55,43 @@ const MeusPlantios = ({ onBack, onCreateNew }: MeusPlantiosProps) => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+  };
+
+  const handleSaveEdit = async (updatedProject: Project) => {
+    try {
+      const { error } = await supabase
+        .from('microforest_projects')
+        .update({
+          name: updatedProject.name,
+          description: updatedProject.description,
+          location_name: updatedProject.location_name,
+          trees_planned: updatedProject.trees_planned,
+          trees_planted: updatedProject.trees_planted,
+          status: updatedProject.status
+        })
+        .eq('id', updatedProject.id);
+
+      if (error) throw error;
+
+      setProjects(projects.map(p => p.id === updatedProject.id ? updatedProject : p));
+      setEditingProject(null);
+      
+      toast({
+        title: "Projeto atualizado",
+        description: "As alterações foram salvas com sucesso",
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar projeto:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível salvar as alterações",
+        variant: "destructive"
+      });
     }
   };
 
@@ -126,6 +164,94 @@ const MeusPlantios = ({ onBack, onCreateNew }: MeusPlantiosProps) => {
       </div>
     );
   }
+
+  // Edit Modal Component
+  const EditModal = ({ project, onSave, onCancel }: { 
+    project: Project; 
+    onSave: (project: Project) => void; 
+    onCancel: () => void; 
+  }) => {
+    const [editedProject, setEditedProject] = useState(project);
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Editar Projeto</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Nome</label>
+              <input
+                type="text"
+                value={editedProject.name}
+                onChange={(e) => setEditedProject({...editedProject, name: e.target.value})}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Descrição</label>
+              <textarea
+                value={editedProject.description}
+                onChange={(e) => setEditedProject({...editedProject, description: e.target.value})}
+                className="w-full px-3 py-2 border rounded-md"
+                rows={3}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Localização</label>
+              <input
+                type="text"
+                value={editedProject.location_name}
+                onChange={(e) => setEditedProject({...editedProject, location_name: e.target.value})}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Árvores Planejadas</label>
+                <input
+                  type="number"
+                  value={editedProject.trees_planned}
+                  onChange={(e) => setEditedProject({...editedProject, trees_planned: parseInt(e.target.value) || 0})}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Árvores Plantadas</label>
+                <input
+                  type="number"
+                  value={editedProject.trees_planted}
+                  onChange={(e) => setEditedProject({...editedProject, trees_planted: parseInt(e.target.value) || 0})}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Status</label>
+              <select
+                value={editedProject.status}
+                onChange={(e) => setEditedProject({...editedProject, status: e.target.value})}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                <option value="planning">Planejando</option>
+                <option value="active">Ativo</option>
+                <option value="completed">Concluído</option>
+              </select>
+            </div>
+            <div className="flex space-x-2 pt-4">
+              <Button onClick={() => onSave(editedProject)} className="flex-1 bg-puff-green hover:bg-puff-green/90">
+                Salvar
+              </Button>
+              <Button variant="outline" onClick={onCancel} className="flex-1">
+                Cancelar
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white p-4">
@@ -227,7 +353,12 @@ const MeusPlantios = ({ onBack, onCreateNew }: MeusPlantiosProps) => {
                     )}
 
                     <div className="flex space-x-2 pt-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => handleEditProject(project)}
+                      >
                         <Edit className="w-4 h-4 mr-1" />
                         Editar
                       </Button>
@@ -245,6 +376,15 @@ const MeusPlantios = ({ onBack, onCreateNew }: MeusPlantiosProps) => {
               </Card>
             ))}
           </div>
+        )}
+
+        {/* Edit Modal */}
+        {editingProject && (
+          <EditModal
+            project={editingProject}
+            onSave={handleSaveEdit}
+            onCancel={() => setEditingProject(null)}
+          />
         )}
       </div>
     </div>
