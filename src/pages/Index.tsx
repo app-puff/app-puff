@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import SplashScreen from '@/components/SplashScreen';
 
-const IndexContent = () => {
+const Index = () => {
   const [showSplash, setShowSplash] = useState(true);
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -36,14 +36,6 @@ const IndexContent = () => {
   }
 
   return null;
-};
-
-const Index = () => {
-  return (
-    <AuthProvider>
-      <IndexContent />
-    </AuthProvider>
-  );
 };
 
 export default Index;
