@@ -2,22 +2,25 @@
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { MapPin, Sprout, Plus, BookOpen, Target, Users, BarChart3, Settings, Menu } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-interface SideMenuProps {
-  onNavigate: (screen: string) => void;
-}
+const SideMenu = () => {
+  const navigate = useNavigate();
 
-const SideMenu = ({ onNavigate }: SideMenuProps) => {
   const menuItems = [
-    { id: 'map', title: 'Mapa Verde', icon: <MapPin className="w-5 h-5" />, color: 'text-blue-600' },
-    { id: 'plantings', title: 'Meus Plantios', icon: <Sprout className="w-5 h-5" />, color: 'text-green-600' },
-    { id: 'create', title: 'Novo Projeto', icon: <Plus className="w-5 h-5" />, color: 'text-orange-600' },
-    { id: 'guide', title: 'Guia de Plantio', icon: <BookOpen className="w-5 h-5" />, color: 'text-purple-600' },
-    { id: 'challenges', title: 'Desafios', icon: <Target className="w-5 h-5" />, color: 'text-yellow-600' },
-    { id: 'community', title: 'Fórum', icon: <Users className="w-5 h-5" />, color: 'text-pink-600' },
-    { id: 'impact', title: 'Impacto Ambiental', icon: <BarChart3 className="w-5 h-5" />, color: 'text-emerald-600' },
-    { id: 'profile', title: 'Perfil e Configurações', icon: <Settings className="w-5 h-5" />, color: 'text-gray-600' },
+    { id: 'dashboard', title: 'Dashboard', url: '/dashboard', icon: <Settings className="w-5 h-5" />, color: 'text-gray-600' },
+    { id: 'map', title: 'Mapa Verde', url: '/mapa-verde', icon: <MapPin className="w-5 h-5" />, color: 'text-blue-600' },
+    { id: 'plantings', title: 'Meus Plantios', url: '/meus-plantios', icon: <Sprout className="w-5 h-5" />, color: 'text-green-600' },
+    { id: 'create', title: 'Criar Microfloresta', url: '/criar-microfloresta', icon: <Plus className="w-5 h-5" />, color: 'text-orange-600' },
+    { id: 'guide', title: 'Guia de Plantio', url: '/guia', icon: <BookOpen className="w-5 h-5" />, color: 'text-purple-600' },
+    { id: 'challenges', title: 'Desafios', url: '/desafios', icon: <Target className="w-5 h-5" />, color: 'text-yellow-600' },
+    { id: 'community', title: 'Comunidade', url: '/comunidade', icon: <Users className="w-5 h-5" />, color: 'text-pink-600' },
+    { id: 'impact', title: 'Impacto Ambiental', url: '/impacto-ambiental', icon: <BarChart3 className="w-5 h-5" />, color: 'text-emerald-600' },
   ];
+
+  const handleNavigate = (url: string) => {
+    navigate(url);
+  };
 
   return (
     <Sheet>
@@ -42,7 +45,7 @@ const SideMenu = ({ onNavigate }: SideMenuProps) => {
               key={item.id}
               variant="ghost"
               className="w-full justify-start h-12 text-left hover:bg-puff-sky/10"
-              onClick={() => onNavigate(item.id)}
+              onClick={() => handleNavigate(item.url)}
             >
               <span className={item.color}>{item.icon}</span>
               <span className="ml-3">{item.title}</span>

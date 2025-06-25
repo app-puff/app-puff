@@ -4,16 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Users, Target, BookOpen, MapPin, Sprout, Plus, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import LogoutButton from '@/components/LogoutButton';
 import SideMenu from '@/components/SideMenu';
 import NotificationPanel from '@/components/NotificationPanel';
 
-interface DashboardProps {
-  onNavigate: (screen: string) => void;
-}
-
-const Dashboard = ({ onNavigate }: DashboardProps) => {
+const Dashboard = () => {
   const [notifications] = useState(3);
+  const navigate = useNavigate();
   
   const dashboardCards = [
     {
@@ -22,7 +20,8 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
       description: 'Explore projetos de microflorestas',
       icon: <MapPin className="w-8 h-8" />,
       color: 'bg-blue-500',
-      stats: '127 projetos ativos'
+      stats: '127 projetos ativos',
+      url: '/mapa-verde'
     },
     {
       id: 'plantings',
@@ -30,7 +29,8 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
       description: 'Gerencie seus projetos',
       icon: <Sprout className="w-8 h-8" />,
       color: 'bg-puff-green',
-      stats: '3 projetos em andamento'
+      stats: '3 projetos em andamento',
+      url: '/meus-plantios'
     },
     {
       id: 'create',
@@ -38,7 +38,8 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
       description: 'Inicie um novo projeto',
       icon: <Plus className="w-8 h-8" />,
       color: 'bg-orange-500',
-      stats: 'Plano personalizado'
+      stats: 'Plano personalizado',
+      url: '/criar-microfloresta'
     },
     {
       id: 'guide',
@@ -46,7 +47,8 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
       description: 'Centro de conhecimento',
       icon: <BookOpen className="w-8 h-8" />,
       color: 'bg-purple-500',
-      stats: '50+ artigos'
+      stats: '50+ artigos',
+      url: '/guia'
     },
     {
       id: 'challenges',
@@ -54,7 +56,8 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
       description: 'Gamificação e conquistas',
       icon: <Target className="w-8 h-8" />,
       color: 'bg-yellow-500',
-      stats: 'Nível 7 - Guardião'
+      stats: 'Nível 7 - Guardião',
+      url: '/desafios'
     },
     {
       id: 'community',
@@ -62,9 +65,14 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
       description: 'Fórum e colaboração',
       icon: <Users className="w-8 h-8" />,
       color: 'bg-pink-500',
-      stats: '1.2k membros ativos'
+      stats: '1.2k membros ativos',
+      url: '/comunidade'
     }
   ];
+
+  const handleCardClick = (url: string) => {
+    navigate(url);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white">
@@ -73,7 +81,7 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <SideMenu onNavigate={onNavigate} />
+              <SideMenu />
               <div className="flex items-center space-x-3 ml-3">
                 <div className="w-8 h-8 bg-puff-green rounded-full flex items-center justify-center">
                   <span className="text-white text-sm">🌱</span>
@@ -151,7 +159,7 @@ const Dashboard = ({ onNavigate }: DashboardProps) => {
             <Card 
               key={card.id} 
               className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1 group" 
-              onClick={() => onNavigate(card.id)}
+              onClick={() => handleCardClick(card.url)}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
