@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Search, BookOpen, Leaf, Droplet, Sun, Bug, Recycle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface GuiaProps {
   onBack: () => void;
@@ -13,6 +13,7 @@ interface GuiaProps {
 const Guia = ({ onBack }: GuiaProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const navigate = useNavigate();
 
   const categorias = [
     { id: 'all', nome: 'Todos', icon: <BookOpen className="w-4 h-4" /> },
@@ -114,6 +115,10 @@ const Guia = ({ onBack }: GuiaProps) => {
     }
   };
 
+  const handleArticleClick = (articleId: number) => {
+    navigate(`/guia/artigo/${articleId}`);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-puff-sky/20 to-white p-4">
       <div className="max-w-7xl mx-auto">
@@ -162,7 +167,11 @@ const Guia = ({ onBack }: GuiaProps) => {
           <h2 className="text-xl font-semibold mb-4">📖 Centro de Conhecimento</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {artigosFiltrados.map(artigo => (
-              <Card key={artigo.id} className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+              <Card 
+                key={artigo.id} 
+                className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+                onClick={() => handleArticleClick(artigo.id)}
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="text-3xl mb-2">{artigo.imagem}</div>

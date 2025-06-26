@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, TreePine, Droplets, Wind, Users, Leaf, Thermometer } from 'lucide-react';
@@ -94,6 +93,28 @@ const ImpactoAmbiental = ({ onBack }: ImpactoAmbientalProps) => {
           <h1 className="text-2xl font-bold text-puff-green">📊 Impacto Ambiental</h1>
           <div></div>
         </div>
+
+        {/* Header explicativo */}
+        <Card className="mb-8 bg-gradient-to-r from-green-50 to-blue-50 border-puff-green/20">
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-puff-green rounded-full flex items-center justify-center flex-shrink-0">
+                <Leaf className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-puff-green mb-2">
+                  Transformando o Ecossistema Local
+                </h2>
+                <p className="text-gray-700 leading-relaxed">
+                  O projeto PUFF vem revolucionando o meio ambiente através da criação de microflorestas urbanas. 
+                  Cada árvore plantada contribui para a purificação do ar, redução de temperatura, conservação da água 
+                  e criação de habitats para a biodiversidade local. Nossos dados mostram o impacto real e mensurável 
+                  que nossas ações coletivas geram no ecossistema, promovendo um futuro mais verde e sustentável para todos.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Métricas Principais */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

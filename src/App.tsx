@@ -15,6 +15,7 @@ import Desafios from "./pages/Desafios";
 import Comunidade from "./pages/Comunidade";
 import ImpactoAmbiental from "./pages/ImpactoAmbiental";
 import Guia from "./pages/Guia";
+import GuiaArtigo from "./pages/GuiaArtigo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/comunidade" element={<Comunidade />} />
             <Route path="/impacto-ambiental" element={<ImpactoAmbiental />} />
             <Route path="/guia" element={<Guia />} />
+            <Route path="/guia/artigo/:id" element={<GuiaArtigo />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

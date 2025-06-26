@@ -1,18 +1,90 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Users, Target, BookOpen, MapPin, Sprout, Plus, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import LogoutButton from '@/components/LogoutButton';
 import SideMenu from '@/components/SideMenu';
 import NotificationPanel from '@/components/NotificationPanel';
 
 const Dashboard = () => {
   const [notifications] = useState(3);
+  const [recentActivities, setRecentActivities] = useState([]);
   const navigate = useNavigate();
+  const { user, isGuest } = useAuth();
   
+  // Generate dynamic recent activities
+  useEffect(() => {
+    const activities = [
+      {
+        id: 1,
+        type: 'plant_growth',
+        message: 'Microfloresta da Escola Verde crescendo bem!',
+        time: `Há ${Math.floor(Math.random() * 5) + 1} horas`,
+        xp: 5,
+        color: 'green'
+      },
+      {
+        id: 2,
+        type: 'challenge_completed',
+        message: `Desafio "${Math.random() > 0.5 ? '20 mudas em Junho' : 'Guardião da Biodiversidade'}" concluído! 🎉`,
+        time: `${Math.floor(Math.random() * 3) + 1} dia${Math.floor(Math.random() * 3) + 1 > 1 ? 's' : ''} atrás`,
+        xp: 50,
+        color: 'blue'
+      },
+      {
+        id: 3,
+        type: 'community',
+        message: `${Math.floor(Math.random() * 5) + 1} novos membros seguiram seu projeto`,
+        time: `${Math.floor(Math.random() * 7) + 1} dias atrás`,
+        xp: 0,
+        color: 'purple'
+      },
+      {
+        id: 4,
+        type: 'maintenance',
+        message: 'Checklist de manutenção concluído no Projeto Verde',
+        time: `${Math.floor(Math.random() * 12) + 1} horas atrás`,
+        xp: 10,
+        color: 'yellow'
+      }
+    ];
+    
+    // Shuffle and take 3 random activities
+    const shuffled = activities.sort(() => 0.5 - Math.random());
+    setRecentActivities(shuffled.slice(0, 3));
+  }, []);
+
+  // Get user name for greeting
+  const getUserName = () => {
+    if (isGuest) return 'Puffer';
+    if (user?.user_metadata?.full_name) return user.user_metadata.full_name.split(' ')[0];
+    if (user?.email) return user.email.split('@')[0];
+    return 'Usuário';
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'plant_growth': return <Sprout className="w-5 h-5 text-white" />;
+      case 'challenge_completed': return <Target className="w-5 h-5 text-white" />;
+      case 'community': return <Users className="w-5 h-5 text-white" />;
+      case 'maintenance': return <Settings className="w-5 h-5 text-white" />;
+      default: return <Sprout className="w-5 h-5 text-white" />;
+    }
+  };
+
+  const getActivityBgColor = (color: string) => {
+    switch (color) {
+      case 'green': return 'bg-puff-green';
+      case 'blue': return 'bg-blue-500';
+      case 'purple': return 'bg-purple-500';
+      case 'yellow': return 'bg-yellow-500';
+      default: return 'bg-puff-green';
+    }
+  };
+
   const dashboardCards = [
     {
       id: 'map',
@@ -94,8 +166,10 @@ const Dashboard = () => {
             <div className="flex items-center space-x-4">
               <NotificationPanel notificationCount={notifications} />
               <div className="text-right">
-                <p className="text-sm font-medium">Olá, Thais! 👋</p>
-                <p className="text-xs text-gray-500">Bem-vinda de volta</p>
+                <p className="text-sm font-medium">Olá, {getUserName()}! 👋</p>
+                <p className="text-xs text-gray-500">
+                  {isGuest ? 'Modo visitante ativo' : 'Bem-vinda de volta'}
+                </p>
               </div>
               <LogoutButton />
             </div>
@@ -192,33 +266,20 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-3 bg-green-50 rounded-lg">
-                  <div className="w-10 h-10 bg-puff-green rounded-full flex items-center justify-center">
-                    <Sprout className="w-5 h-5 text-white" />
+                {recentActivities.map((activity: any) => (
+                  <div key={activity.id} className={`flex items-center space-x-4 p-3 ${activity.color === 'green' ? 'bg-green-50' : activity.color === 'blue' ? 'bg-blue-50' : activity.color === 'purple' ? 'bg-purple-50' : 'bg-yellow-50'} rounded-lg`}>
+                    <div className={`w-10 h-10 ${getActivityBgColor(activity.color)} rounded-full flex items-center justify-center`}>
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{activity.message}</p>
+                      <p className="text-xs text-gray-500">
+                        {activity.time}
+                        {activity.xp > 0 && ` • +${activity.xp} XP`}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Microfloresta da Escola Verde crescendo bem!</p>
-                    <p className="text-xs text-gray-500">Há 2 horas • +5 XP</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                    <Target className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Desafio "20 mudas em Junho" concluído! 🎉</p>
-                    <p className="text-xs text-gray-500">Ontem • +50 XP</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4 p-3 bg-purple-50 rounded-lg">
-                  <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-                    <Users className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">3 novos membros seguiram seu projeto</p>
-                    <p className="text-xs text-gray-500">2 dias atrás</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>

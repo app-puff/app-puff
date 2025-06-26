@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { Users, TreePineIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthScreenProps {
   onLogin: () => void;
@@ -20,8 +21,9 @@ const AuthScreen = ({ onLogin, onGuestAccess }: AuthScreenProps) => {
   const [userType, setUserType] = useState('community');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInAsGuest } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +62,12 @@ const AuthScreen = ({ onLogin, onGuestAccess }: AuthScreenProps) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGuestAccess = () => {
+    signInAsGuest();
+    navigate('/dashboard');
+    onGuestAccess();
   };
 
   return (
@@ -197,8 +205,8 @@ const AuthScreen = ({ onLogin, onGuestAccess }: AuthScreenProps) => {
             <div className="mt-6 pt-4 border-t">
               <Button
                 variant="ghost"
-                onClick={onGuestAccess}
-                className="w-full flex items-center gap-2"
+                onClick={handleGuestAccess}
+                className="w-full flex items-center gap-2 hover:bg-puff-green/10"
               >
                 <Users className="w-4 h-4" />
                 Entrar como Visitante
