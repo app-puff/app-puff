@@ -230,7 +230,7 @@ const Guia = ({
                     <h4 className="text-sm font-medium">Mutirão de Plantio</h4>
                     <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">Inscrições Abertas</span>
                   </div>
-                  <p className="text-xs text-gray-600">22 de Julho • 08h00 • Parque Central</p>
+                  <p className="text-xs text-gray-600">22 de Agosto • 08h00 • ETE Centro</p>
                 </div>
                 <div className="p-3 bg-yellow-50 rounded-lg">
                   <div className="flex justify-between items-start mb-2">
