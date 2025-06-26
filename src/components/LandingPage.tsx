@@ -1,13 +1,9 @@
-
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { TreePineIcon, Leaf } from 'lucide-react';
-
 const LandingPage = () => {
   const navigate = useNavigate();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
+  return <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
       {/* Header */}
       <header className="w-full px-4 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -18,10 +14,7 @@ const LandingPage = () => {
             <span className="text-xl font-bold text-puff-green">PUFF</span>
           </div>
           
-          <Button 
-            onClick={() => navigate('/auth')}
-            className="bg-puff-green hover:bg-puff-green/90"
-          >
+          <Button onClick={() => navigate('/auth')} className="bg-puff-green hover:bg-puff-green/90">
             Entrar
           </Button>
         </div>
@@ -30,9 +23,7 @@ const LandingPage = () => {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-16 text-center">
         <div className="mb-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
-            Bem-vindo ao Mapa Verde 🌱
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">Bem-vindo ao PUFF 🌱</h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8">
             Explore e acompanhe projetos de microflorestas no Brasil
           </p>
@@ -47,11 +38,7 @@ const LandingPage = () => {
 
         {/* Main CTA */}
         <div className="mb-16">
-          <Button 
-            onClick={() => navigate('/mapa-verde')}
-            size="lg"
-            className="bg-puff-green hover:bg-puff-green/90 text-lg px-8 py-4 h-auto"
-          >
+          <Button onClick={() => navigate('/mapa-verde')} size="lg" className="bg-puff-green hover:bg-puff-green/90 text-lg px-8 py-4 h-auto">
             Ver Projetos no Mapa
           </Button>
         </div>
@@ -90,12 +77,7 @@ const LandingPage = () => {
           <p className="text-gray-600 mb-2">
             Siga-nos no Instagram
           </p>
-          <a 
-            href="https://instagram.com/aplicativopuff" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-puff-green hover:text-puff-green/80 font-medium"
-          >
+          <a href="https://instagram.com/aplicativopuff" target="_blank" rel="noopener noreferrer" className="text-puff-green hover:text-puff-green/80 font-medium">
             @aplicativopuff
           </a>
           <div className="mt-4 text-sm text-gray-500">
@@ -103,8 +85,6 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default LandingPage;
