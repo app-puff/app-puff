@@ -1,0 +1,28 @@
+
+{
+  "name": "PUFF - Plante Um Futuro Feliz",
+  "short_name": "PUFF",
+  "description": "Aplicativo para criação e gestão de microflorestas urbanas e educação ambiental",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4ade80",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/lovable-uploads/57eb8af7-f2d4-425c-8bd1-b77ac8e26012.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/lovable-uploads/57eb8af7-f2d4-425c-8bd1-b77ac8e26012.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["environment", "education", "sustainability"],
+  "lang": "pt-BR",
+  "scope": "/"
+}

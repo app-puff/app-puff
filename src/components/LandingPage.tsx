@@ -1,15 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { TreePineIcon, Leaf } from 'lucide-react';
+import { Leaf } from 'lucide-react';
+
 const LandingPage = () => {
   const navigate = useNavigate();
-  return <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
       {/* Header */}
       <header className="w-full px-4 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-puff-green text-white p-2 rounded-full">
-              <TreePineIcon className="w-6 h-6" />
+            <div className="bg-white p-2 rounded-full shadow-sm">
+              <img 
+                src="/lovable-uploads/57eb8af7-f2d4-425c-8bd1-b77ac8e26012.png" 
+                alt="PUFF" 
+                className="w-6 h-6"
+              />
             </div>
             <span className="text-xl font-bold text-puff-green">PUFF</span>
           </div>
@@ -23,6 +30,13 @@ const LandingPage = () => {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-16 text-center">
         <div className="mb-8">
+          <div className="flex justify-center mb-6">
+            <img 
+              src="/lovable-uploads/57eb8af7-f2d4-425c-8bd1-b77ac8e26012.png" 
+              alt="PUFF Logo" 
+              className="w-24 h-24"
+            />
+          </div>
           <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">Bem-vindo ao PUFF 🌱</h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8">
             Explore e acompanhe projetos de microflorestas no Brasil
@@ -32,7 +46,11 @@ const LandingPage = () => {
         {/* Decorative elements */}
         <div className="flex justify-center items-center gap-4 mb-12">
           <Leaf className="w-8 h-8 text-green-400" />
-          <TreePineIcon className="w-12 h-12 text-puff-green" />
+          <img 
+            src="/lovable-uploads/57eb8af7-f2d4-425c-8bd1-b77ac8e26012.png" 
+            alt="PUFF" 
+            className="w-12 h-12"
+          />
           <Leaf className="w-8 h-8 text-green-400" />
         </div>
 
@@ -85,6 +103,8 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default LandingPage;

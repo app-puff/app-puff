@@ -32,8 +32,12 @@ const SideMenu = () => {
       <SheetContent side="left" className="w-80">
         <SheetHeader>
           <SheetTitle className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-puff-green rounded-full flex items-center justify-center">
-              <span className="text-white text-sm">🌱</span>
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+              <img 
+                src="/lovable-uploads/57eb8af7-f2d4-425c-8bd1-b77ac8e26012.png" 
+                alt="PUFF" 
+                className="w-6 h-6"
+              />
             </div>
             <span>PUFF</span>
           </SheetTitle>
