@@ -1,73 +1,64 @@
-# Welcome to your Lovable project
+PUFF – Plante Um Futuro Feliz
+Visão Geral do Projeto
+Nome do Projeto: PUFF – Plante Um Futuro Feliz
 
-## Project info
+Descrição:
+PUFF é uma plataforma digital gamificada com o objetivo de engajar pessoas, escolas, instituições e comunidades na criação de microflorestas urbanas. Através de ações colaborativas e educativas, o projeto visa promover práticas sustentáveis, impacto ambiental positivo e educação socioambiental.
 
-**URL**: https://lovable.dev/projects/fcfd3cc4-35b9-4c13-88b3-f80805e7b7b1
+Público-Alvo:
 
-## How can I edit this code?
+Estudantes (ensino fundamental, médio e superior)
 
-There are several ways of editing your application.
+Professores e educadores ambientais
 
-**Use Lovable**
+Escolas e instituições de ensino
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fcfd3cc4-35b9-4c13-88b3-f80805e7b7b1) and start prompting.
+Comunidades locais e público geral interessado em sustentabilidade
 
-Changes made via Lovable will be committed automatically to this repo.
+Missão, Visão e Valores
+Missão:
+Conectar pessoas para restaurar ambientes urbanos através da criação de microflorestas, promovendo educação, impacto ambiental e desenvolvimento sustentável.
 
-**Use your preferred IDE**
+Visão:
+Ser referência nacional em soluções digitais para educação ambiental, restauração ecológica urbana e mobilização comunitária.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Valores:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Sustentabilidade
 
-Follow these steps:
+Educação ambiental
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Cooperação e comunidade
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Tecnologia a serviço do meio ambiente
 
-# Step 3: Install the necessary dependencies.
-npm i
+Transparência e impacto positivo
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Funcionalidades Principais do Aplicativo
+🏠 Dashboard (Home)
+Acesso rápido às principais funções:
 
-**Edit a file directly in GitHub**
+🗺️ Mapa Verde
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+🌳 Meus Plantios
 
-**Use GitHub Codespaces**
+🛠️ Novo Projeto
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+📚 Guia de Plantio
 
-## What technologies are used for this project?
+🎯 Desafios
 
-This project is built with:
+🤝 Fórum
 
+⚙️ Perfil e Configurações
+
+## Quais tecnologias são usadas neste projeto?
+- Lovable (Edição e hospedagem)
+- 
+Este projeto foi construído com as stacks:
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/fcfd3cc4-35b9-4c13-88b3-f80805e7b7b1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Supabase (Banco de Dados)
