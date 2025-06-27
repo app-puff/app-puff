@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Target, BookOpen, MapPin, Sprout, Plus, Settings } from 'lucide-react';
+import { Users, Target, BookOpen, MapPin, Sprout, Plus, Settings, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import LogoutButton from '@/components/LogoutButton';
@@ -13,7 +14,7 @@ const Dashboard = () => {
   const [notifications] = useState(3);
   const [recentActivities, setRecentActivities] = useState([]);
   const navigate = useNavigate();
-  const { user, isGuest } = useAuth();
+  const { user, isGuest, signOut } = useAuth();
   
   // Generate dynamic recent activities
   useEffect(() => {
@@ -63,6 +64,11 @@ const Dashboard = () => {
     if (user?.user_metadata?.full_name) return user.user_metadata.full_name.split(' ')[0];
     if (user?.email) return user.email.split('@')[0];
     return 'Usuário';
+  };
+
+  const handleGuestLogout = async () => {
+    await signOut();
+    window.location.href = '/';
   };
 
   const getActivityIcon = (type: string) => {
@@ -168,10 +174,22 @@ const Dashboard = () => {
               <div className="text-right">
                 <p className="text-sm font-medium">Olá, {getUserName()}! 👋</p>
                 <p className="text-xs text-gray-500">
-                  {isGuest ? 'Modo visitante ativo' : 'Bem-vinda de volta'}
+                  {isGuest ? 'Modo visitante ativo' : 'Bem-vindo de volta'}
                 </p>
               </div>
-              <LogoutButton />
+              {isGuest ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleGuestLogout}
+                  className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sair</span>
+                </Button>
+              ) : (
+                <LogoutButton />
+              )}
             </div>
           </div>
         </div>

@@ -5,14 +5,14 @@ import { useEffect } from 'react';
 import Guia from '@/components/Guia';
 
 const GuiaPage = () => {
-  const { user, loading } = useAuth();
+  const { user, isGuest, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !isGuest) {
       navigate('/auth');
     }
-  }, [user, loading, navigate]);
+  }, [user, isGuest, loading, navigate]);
 
   const handleBack = () => {
     navigate('/dashboard');
@@ -24,7 +24,7 @@ const GuiaPage = () => {
     </div>;
   }
 
-  if (!user) {
+  if (!user && !isGuest) {
     return null;
   }
 
